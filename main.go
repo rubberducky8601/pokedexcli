@@ -7,7 +7,11 @@ import (
 )
 
 func main() {
+	commands := getCommands()
+
 	scanner := bufio.NewScanner(os.Stdin)
+	fmt.Printf("Welcome to the Pokedex!\n Usage:\n\n")
+	commands["help"].callback()
 
 	for {
 		fmt.Printf("Pokedex > ")
@@ -24,7 +28,17 @@ func main() {
 		}
 
 		cleanedInput := CleanInput(input)
-		fmt.Printf("Your command was: %s\n", cleanedInput[0])
+		commandStr := cleanedInput[0]
 
+		command, ok := commands[commandStr]
+		if !ok {
+			fmt.Println("Unknown command")
+			continue
+		}
+
+		if err := command.callback(); err != nil {
+			fmt.Println(err)
+			continue
+		}
 	}
 }
